@@ -4,13 +4,16 @@ import json
 from django.http import JsonResponse
 from django.apps import apps
 from django.db.utils import ConnectionDoesNotExist
-from .parse import SqlParse
+from .parse import sql_wrappr
+from django.core import serializers
 
 # Create your views here.
 def get_data(request):
     if request.method == "POST":
         payload = json.loads(request.body)
+        database = payload['database_name']
+        final_sql, column_names = sql_wrappr(payload['data'])
+        Model = apps.get_model('tours', payload['data']['worksheet_id'])
+        requested_data = Model.objects.using(database).raw(final_sql)
         import ipdb; ipdb.set_trace()
-        SqlParse.select_all(payload['data'])
-        table1.objects.using('hwll').raw("select * from ")
-        return JsonResponse({"hell":"miss"})
+        return JsonResponse({"hell": requested_data})
