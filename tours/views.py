@@ -16,4 +16,4 @@ def get_data(request):
         Model = apps.get_model('tours', payload['data']['worksheet_id'])
         requested_data = Model.objects.using(database).raw(final_sql)
         import ipdb; ipdb.set_trace()
-        return JsonResponse({"hell": requested_data})
+        return JsonResponse({"column": column_names})
